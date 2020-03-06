@@ -30,23 +30,42 @@ func check(err interface{}) {
 		log.Fatalln(err)
 	}
 }
+
+type Example struct {
+	Item Item `json:"item"`
+}
+
+type Item struct {
+	Title      string     `json:"title"`
+	Properties []Property `json:"properties"`
+}
+
+type Property struct {
+	Num  int    `json:"num"`
+	Name string `json:"name"`
+}
+
 func main() {
 	http.HandleFunc("/p", func(rw http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(rw, "Hello, %q", html.EscapeString(r.URL.Path))
 		log.Println(r.URL.Path)
-		var m map[string]interface{}
-		m = make(map[string]interface{})
-		m["user_id"] = 123
-		m["token"] = "ABCDEF"
 
-		requestBody, err := json.Marshal(m)
-		check(err)
+		info := &Example{
+			Item: Item{
+				Title: "Yoyoyo",
+				Properties: []Property{
+					{Num: 123, Name: "harry"},
+					{Num: 456, Name: "david"},
+				},
+			},
+		}
+		requestBody, err := json.Marshal(info)
 
 		timeout := time.Duration(5 * time.Second)
 		client := http.Client{
 			Timeout: timeout,
 		}
-		request, err := http.NewRequest("POST", "http://localhost:3005/any", bytes.NewBuffer(requestBody))
+		request, err := http.NewRequest("POST", "http://localhost:3005/any", bytes.NewReader(requestBody))
 		request.Header.Set("Content-Type", "application/json")
 		check(err)
 
