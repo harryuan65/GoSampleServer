@@ -31,15 +31,18 @@ func check(err interface{}) {
 	}
 }
 
+// Example is the root of json
 type Example struct {
 	Item Item `json:"item"`
 }
 
+// Item is inside example
 type Item struct {
 	Title      string     `json:"title"`
 	Properties []Property `json:"properties"`
 }
 
+// Property is a single pair of attr
 type Property struct {
 	Num  int    `json:"num"`
 	Name string `json:"name"`
